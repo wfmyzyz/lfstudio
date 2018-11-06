@@ -43,6 +43,7 @@ import cn.java.entity.StudentUser;
 import cn.java.service.impl.AdminUserIfImpl;
 import cn.java.service.impl.DormitoryIfImpl;
 import cn.java.service.impl.DormitoryRoomIfImpl;
+import cn.java.service.impl.DormitoryRoomManNumIfImpl;
 import cn.java.service.impl.SchoolCollegeIfImpl;
 import cn.java.service.impl.SchoolMajorClassIfImpl;
 import cn.java.service.impl.SchoolMajorIfImpl;
@@ -75,6 +76,8 @@ public class AdminUserController {
 	DormitoryIfImpl dormitoryIfImpl;
 	@Autowired
 	DormitoryRoomIfImpl dormitoryRoomIfImpl;
+	@Autowired
+	DormitoryRoomManNumIfImpl dormitoryRoomManNumIfImpl;
 	/**
 	 * 管理员列表
 	 * @param model
@@ -96,9 +99,10 @@ public class AdminUserController {
 		}
 		model.addAttribute("pages", ((Page)userlist).getPages());
 		model.addAttribute("nowpage", ((Page)userlist).getPageNum());
+		model.addAttribute("countnum", ((Page)userlist).getTotal());
 		model.addAttribute("userlist", userlist);
 		model.addAttribute("message", map.get("message"));
-		model.addAttribute("url", request.getContextPath()+"/admin/adminuser.shtml");
+		model.addAttribute("url", request.getContextPath()+"/admin/adminuser.shtml?q=q");
 		return "admin/admin/user/adminuser.jsp";
 		
 	}
@@ -174,7 +178,7 @@ public class AdminUserController {
 	}
 	
 	/**
-	 * 学生用户列表
+	 * 	学生用户列表
 	 */
 	@RequestMapping("/studentuser")
 	public String studentuser(Model model,ModelMap map,HttpServletRequest request) {
@@ -192,9 +196,10 @@ public class AdminUserController {
 			}
 			model.addAttribute("pages", ((Page)userlist).getPages());
 			model.addAttribute("nowpage", ((Page)userlist).getPageNum());
+			model.addAttribute("countnum", ((Page)userlist).getTotal());
 			model.addAttribute("userlist", userlist);
 			model.addAttribute("message", map.get("message"));
-			model.addAttribute("url", request.getContextPath()+"/admin/studentuser.shtml");
+			model.addAttribute("url", request.getContextPath()+"/admin/studentuser.shtml?act=search&pid="+name);
 			return "admin/admin/user/studentuser.jsp";
 		}else {
 			List<StudentUser> userlist;
@@ -209,9 +214,10 @@ public class AdminUserController {
 			}
 			model.addAttribute("pages", ((Page)userlist).getPages());
 			model.addAttribute("nowpage", ((Page)userlist).getPageNum());
+			model.addAttribute("countnum", ((Page)userlist).getTotal());
 			model.addAttribute("userlist", userlist);
 			model.addAttribute("message", map.get("message"));
-			model.addAttribute("url", request.getContextPath()+"/admin/studentuser.shtml");
+			model.addAttribute("url", request.getContextPath()+"/admin/studentuser.shtml?q=q");
 			return "admin/admin/user/studentuser.jsp";	
 		}
 	}
@@ -296,7 +302,7 @@ public class AdminUserController {
 		if(studentPerson == null) {
 			room = dormitoryRoomIfImpl.selectroomAll(1);
 		}else {
-			if((Integer)studentPerson.getDormitory() == null) {
+			if((Integer)studentPerson.getDormitory() == null || studentPerson.getDormitory() == 0) {
 				room = dormitoryRoomIfImpl.selectroomAll(1);
 			}else {
 				room = dormitoryRoomIfImpl.selectroomAll(studentPerson.getDormitory());
@@ -339,13 +345,19 @@ public class AdminUserController {
 	@RequestMapping("studentupload")
 	public String studentupload(StudentPerson studentPerson,Model model,RedirectAttributes attr,HttpServletRequest request) throws ParseException {
 		StudentPerson StudentPerson = studentPersonIfImpl.selectonebyid(studentPerson.getStudentid());
-		if(request.getParameter("date")!=null) {
+		if(!request.getParameter("date").trim().equals("")) {
 			SimpleDateFormat simpledate = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = simpledate.parse(request.getParameter("date"));
 			studentPerson.setBirthday(date);
+		}else {
+			studentPerson.setBirthday(null);
 		}
 		if(StudentPerson != null) {	
-			System.out.println(studentPerson.getHeadimg());
+			StudentPerson person = studentPersonIfImpl.selectonebyid(studentPerson.getStudentid());
+			if(person.getRoom()!=studentPerson.getRoom()) {
+				dormitoryRoomManNumIfImpl.addnum(studentPerson.getRoom());
+				dormitoryRoomManNumIfImpl.subnum(person.getRoom());
+			}
 			int back = optionStudentuser.updatestudentuser(studentPerson);
 			if(back == 1) {
 				attr.addFlashAttribute("message", "修改成功！");
@@ -355,6 +367,7 @@ public class AdminUserController {
 				return "redirect:/admin/studentmessage/"+studentPerson.getStudentid()+".shtml";
 			}
 		}else {
+			dormitoryRoomManNumIfImpl.addnum(studentPerson.getRoom());
 			int back = optionStudentuser.insertstudentuser(studentPerson);
 			if(back == 1) {
 				attr.addFlashAttribute("message", "修改成功！");

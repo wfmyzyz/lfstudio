@@ -101,10 +101,19 @@ public class AdminController {
 	@RequestMapping(value="/index")
 	public String adminindex(@ModelAttribute("message") String message,Model model,HttpServletRequest request) {
 		request.getSession().getAttribute("user");
-		System.out.println(request.getSession().getAttribute("user"));
 		model.addAttribute("message",message);
 		model.addAttribute("user",request.getSession().getAttribute("user"));
 		return "/admin/admin/index.jsp";	
+	}
+	
+	/**
+	 * 	注销登录
+	 */
+	@RequestMapping("/signout")
+	public String signout(HttpServletRequest request,RedirectAttributes attr) {
+		request.getSession().removeAttribute("user");
+		attr.addFlashAttribute("message", "退出成功！");
+		return "redirect:/admin/login.shtml";
 	}
 	
 }

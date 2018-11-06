@@ -68,6 +68,24 @@ public class StudentPersonIfImpl implements StudentPersonIf{
 		// TODO Auto-generated method stub
 		return studentPersonMapper.updateonebyid(record);
 	}
+
+	@Override
+	public List<StudentPerson> selectroomAll(Integer dormitory, Integer room) {
+		// TODO Auto-generated method stub
+		return studentPersonMapper.selectroomAll(dormitory, room);
+	}
+
+	@Override
+	public List<StudentPerson> selectByroomnum(Integer room) {
+		// TODO Auto-generated method stub
+		return studentPersonMapper.selectByroomnum(room);
+	}
+
+	@Override
+	public int updatemoreroom(List<StudentPerson> list) {
+		// TODO Auto-generated method stub
+		return studentPersonMapper.updatemoreroom(list);
+	}
 	
 
 }

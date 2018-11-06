@@ -50,6 +50,8 @@ public class DormitoryRoom {
      *
      * @mbg.generated Tue Oct 23 13:15:57 CST 2018
      */
+    
+    private String roomgam;
     public Integer getId() {
         return id;
     }
@@ -138,9 +140,20 @@ public class DormitoryRoom {
         this.pid = pid;
     }
 
+	public String getRoomgam() {
+		return roomgam;
+	}
+
+	public void setRoomgam(String roomgam) {
+		this.roomgam = roomgam;
+	}
+
 	@Override
 	public String toString() {
-		return "DormitoryRoom [id=" + id + ", name=" + name + ", floor=" + floor + ", pid=" + pid + "]";
+		return "DormitoryRoom [id=" + id + ", name=" + name + ", floor=" + floor + ", pid=" + pid + ", roomgam="
+				+ roomgam + "]";
 	}
+
+
     
 }

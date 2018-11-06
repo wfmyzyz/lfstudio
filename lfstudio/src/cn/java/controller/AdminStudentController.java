@@ -1,5 +1,6 @@
 package cn.java.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,13 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import cn.java.dao.admin.StudentPersonMapper;
+import cn.java.entity.Dormitory;
+import cn.java.entity.DormitoryRoom;
 import cn.java.entity.SchoolCollege;
 import cn.java.entity.SchoolMajor;
 import cn.java.entity.SchoolMajorClass;
 import cn.java.entity.StudentPerson;
+import cn.java.service.impl.DormitoryIfImpl;
+import cn.java.service.impl.DormitoryRoomIfImpl;
 import cn.java.service.impl.SchoolCollegeIfImpl;
 import cn.java.service.impl.SchoolMajorClassIfImpl;
 import cn.java.service.impl.SchoolMajorIfImpl;
@@ -33,6 +39,10 @@ public class AdminStudentController {
 	SchoolMajorClassIfImpl schoolMajorClassIfImpl;
 	@Autowired
 	StudentPersonIfImpl studentPersonIfImpl;
+	@Autowired
+	DormitoryIfImpl dormitoryIfImpl;
+	@Autowired
+	DormitoryRoomIfImpl dormitoryRoomIfImpl;
 	/**
 	 * 按学院查询学生
 	 * @param model
@@ -58,10 +68,46 @@ public class AdminStudentController {
 		SchoolMajor majors = schoolMajorIfImpl.selectByPrimaryKey(major);
 		SchoolMajorClass majorclasss = schoolMajorClassIfImpl.selectByPrimaryKey(majorclass);
 		List<StudentPerson> studentlists =  studentPersonIfImpl.selectmajorclassAll(college, major, majorclass);
-		model.addAttribute("college", colleges.getName());
-		model.addAttribute("major", majors.getName());
-		model.addAttribute("majorclass", majorclasss.getName());
+		model.addAttribute("college", colleges);
+		model.addAttribute("major", majors);
+		model.addAttribute("majorclass", majorclasss);
 		model.addAttribute("studentlists", studentlists);
 		return "admin/admin/student/classstudentlist.jsp";		
+	}
+	@RequestMapping("/student/message/{college}/{major}/{majorclass}/{studentid}")
+	public String studentmessage(Model model,@PathVariable(value="college") Integer college,
+			@PathVariable(value="major") Integer major,@PathVariable(value="majorclass") Integer majorclass
+			,@PathVariable(value="studentid") String studentid) {
+		StudentPerson student = studentPersonIfImpl.selectonebyid(studentid);
+		SchoolCollege colleges = schoolCollegeIfImpl.selectByPrimaryKey(student.getCollege());
+		SchoolMajor majors = schoolMajorIfImpl.selectByPrimaryKey(student.getMajor());
+		SchoolMajorClass majorclasss = schoolMajorClassIfImpl.selectByPrimaryKey(student.getMajorclass());
+		SimpleDateFormat simple = new SimpleDateFormat("YYYY-MM-dd");
+		String date=null;
+		if(student.getBirthday()!=null) {
+			date = simple.format(student.getBirthday());
+		}
+		String dormitory = "";
+		String room = "";
+		if(student.getDormitory()==0) {
+			dormitory = "该生尚未分配宿舍楼";
+		}else {
+			Dormitory dormitorys = dormitoryIfImpl.selectByPrimaryKey(student.getDormitory());
+			dormitory = dormitorys.getName();
+		}
+		if(student.getRoom()==0) {
+			room = "该生尚未分配宿舍";
+		}else {
+			DormitoryRoom dormitoryrooms = dormitoryRoomIfImpl.selectByPrimaryKey(student.getRoom());
+			room = dormitoryrooms.getName();
+		}
+		model.addAttribute("dormitory", dormitory);
+		model.addAttribute("room", room);
+		model.addAttribute("date", date);
+		model.addAttribute("college", colleges);
+		model.addAttribute("major", majors);
+		model.addAttribute("majorclass", majorclasss);
+		model.addAttribute("student", student);
+		return "admin/admin/student/studentmessage.jsp";
 	}
 }

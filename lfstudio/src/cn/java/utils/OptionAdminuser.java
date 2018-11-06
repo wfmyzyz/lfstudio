@@ -3,6 +3,7 @@ package cn.java.utils;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,4 +45,10 @@ public class OptionAdminuser {
 		int back = adminUserIfImpl.updateByPrimaryKey(record);
 		return back;
 	}
+	
+	  
+	//@Scheduled(cron = "*/5 * * * * ?")
+	/*public void TaskJob() {
+        System.out.println("test second annotation style ...");
+    }*/
 }

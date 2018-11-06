@@ -1,11 +1,14 @@
 package cn.java.utils;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.java.entity.StudentPerson;
 import cn.java.entity.StudentUser;
+import cn.java.service.impl.DormitoryRoomManNumIfImpl;
 import cn.java.service.impl.StudentPersonIfImpl;
 import cn.java.service.impl.StudentUserIfImpl;
 
@@ -15,6 +18,8 @@ public class OptionStudentuser {
 	StudentUserIfImpl studentUserIfImpl;
 	@Autowired
 	StudentPersonIfImpl studentPersonIfImpl;
+	@Autowired
+	DormitoryRoomManNumIfImpl dormitoryRoomManNumIfImpl;
 	/**
 	 * 	增加管理员
 	 * @return
@@ -79,5 +84,18 @@ public class OptionStudentuser {
 	public int deletestudentbypid(String id) {
 		int back = studentPersonIfImpl.deleteonebyid(id);
 		return back;
+	}
+	
+	/**
+	 * 	批量移除宿舍学生
+	 */
+	@Transactional
+	public int updatemoreroom(List<StudentPerson> list,Integer room) {
+		int back = studentPersonIfImpl.updatemoreroom(list);
+		for(StudentPerson lists : list) {
+			dormitoryRoomManNumIfImpl.subnum(room);
+		}
+		return back;
+		
 	}
 }

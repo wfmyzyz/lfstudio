@@ -430,8 +430,10 @@ public class StudentPerson {
 	public String toString() {
 		return "StudentPerson [id=" + id + ", studentid=" + studentid + ", name=" + name + ", sex=" + sex
 				+ ", birthday=" + birthday + ", birthpath=" + birthpath + ", homepath=" + homepath + ", nation="
-				+ nation + ", headimg=" + headimg + ", dormitory=" + dormitory + ", college=" + college + ", major="
-				+ major + ", majorclass=" + majorclass + "]";
+				+ nation + ", headimg=" + headimg + ", dormitory=" + dormitory + ", room=" + room + ", college="
+				+ college + ", major=" + major + ", majorclass=" + majorclass + "]";
 	}
+
+    
     
 }

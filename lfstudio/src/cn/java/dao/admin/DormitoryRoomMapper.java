@@ -2,6 +2,7 @@ package cn.java.dao.admin;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -54,8 +55,17 @@ public interface DormitoryRoomMapper {
     List<DormitoryRoom> selectroomAll(Integer pid);
     
     /**
+     * 	按条件查询宿舍带人数
+     */
+    List<Map<Object,Object>> selectroomAllnum(Integer pid);
+    /**
      * 	判断宿舍号存在否
      */
     DormitoryRoom selectroomname(@Param("name") String name,@Param("pid") Integer pid);
+    
+    /**
+     * 按带卫生宿舍查询
+     */
+    List<Object> selecthygiene(Integer pid);
     
 }

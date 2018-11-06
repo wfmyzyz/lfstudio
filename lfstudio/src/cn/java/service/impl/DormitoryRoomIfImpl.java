@@ -1,6 +1,7 @@
 package cn.java.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +54,18 @@ public class DormitoryRoomIfImpl implements DormitoryRoomIf{
 	public DormitoryRoom selectroomname(String name,Integer pid) {
 		// TODO Auto-generated method stub
 		return dormitoryRoomMapper.selectroomname(name,pid);
+	}
+
+	@Override
+	public List<Map<Object,Object>> selectroomAllnum(Integer pid) {
+		// TODO Auto-generated method stub
+		return dormitoryRoomMapper.selectroomAllnum(pid);
+	}
+
+	@Override
+	public List<Object> selecthygiene(Integer pid) {
+		// TODO Auto-generated method stub
+		return dormitoryRoomMapper.selecthygiene(pid);
 	}
 
 }

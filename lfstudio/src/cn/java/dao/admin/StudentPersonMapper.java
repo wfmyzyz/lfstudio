@@ -67,4 +67,16 @@ public interface StudentPersonMapper {
      * 	根据学号修改学生
      */
     int updateonebyid(StudentPerson record);
+    
+    /**
+     * 	查询一个宿舍学生
+     */
+    List<StudentPerson> selectroomAll(@Param("dormitory") Integer dormitory,@Param("room") Integer room);
+    
+    /**
+     * 	根据宿舍查询学生
+     */
+    List<StudentPerson> selectByroomnum(Integer room);
+    
+    int updatemoreroom(@Param("list") List<StudentPerson> list);
 }

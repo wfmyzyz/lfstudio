@@ -34,7 +34,7 @@ public class AdminFilter extends OncePerRequestFilter{
 			response.setContentType("text/html;charset=utf-8"); 
 			response.setCharacterEncoding("utf-8");
 			if(request.getSession().getAttribute("user")==null) {
-				/*PrintWriter out = response.getWriter();
+				PrintWriter out = response.getWriter();
 				StringBuilder builder = new StringBuilder();
 				builder.append("<script type=\"text/javascript\">");
 				builder.append("alert('ÇëÏÈµÇÂ¼£¡');");
@@ -42,8 +42,8 @@ public class AdminFilter extends OncePerRequestFilter{
 				builder.append(request.getContextPath()+"/admin/login.shtml");
 				builder.append("';");
 				builder.append("</script>");
-				out.print(builder);*/
-				filterChain.doFilter(request, response);
+				out.print(builder);
+				//filterChain.doFilter(request, response);
 			}else {
 				filterChain.doFilter(request, response);
 			}
